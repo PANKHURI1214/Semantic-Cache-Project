@@ -10,7 +10,7 @@ class SimpleVectorStore:
         self.documents = []
 
     def add(self, embeddings, documents):
-        # We normalize vectors so we can use Dot Product for Cosine Similarity
+       
         self.vectors = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
         self.documents = documents
 
@@ -22,15 +22,15 @@ class SimpleVectorStore:
 
 class SemanticEngine:
     def __init__(self, n_clusters=12):
-        # all-MiniLM-L6-v2 is lightweight and perfect for a "fast" service
+        
         self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
         self.vector_store = SimpleVectorStore()
-        # GMM handles the "Fuzzy" part: it gives probabilities, not just one label
+        
         self.clusterer = GaussianMixture(n_components=n_clusters, covariance_type='diag', random_state=42)
         self.corpus = []
 
     def clean_text(self, text):
-        # Remove Usenet headers/quotes to focus on the semantic core of the message
+        
         text = re.sub(r'(From|Subject|Reply-To|Lines|Organization|Expires|Distribution):.*', '', text)
         text = re.sub(r'(\n|>|---).*', ' ', text)
         return " ".join(text.split())
@@ -44,4 +44,5 @@ class SemanticEngine:
 
     def get_cluster_data(self, embedding):
         probs = self.clusterer.predict_proba(embedding.reshape(1, -1))[0]
+
         return int(np.argmax(probs)), probs
