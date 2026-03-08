@@ -12,8 +12,7 @@ class CacheManager:
             self.misses += 1
             return None
 
-        # Filter: Only look at previous queries that landed in the same topic cluster
-        # This is where the 'Cluster Structure' does real work for efficiency.
+       
         relevant_entries = [e for e in self.cache_store if e['cluster_id'] == query_cluster]
         
         if not relevant_entries:
@@ -63,4 +62,5 @@ class CacheManager:
     def flush(self):
         self.cache_store = []
         self.hits = 0
+
         self.misses = 0
